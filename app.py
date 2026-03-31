@@ -14,13 +14,25 @@ st.sidebar.header("Upload Data")
 uploaded_tx = st.sidebar.file_uploader("Upload Transactions CSV", type=["csv"])
 uploaded_st = st.sidebar.file_uploader("Upload Settlements CSV", type=["csv"])
 
-if uploaded_tx and uploaded_st:
-    transactions = pd.read_csv(uploaded_tx)
-    settlements = pd.read_csv(uploaded_st)
+# File upload section
+if uploaded_tx is not None and uploaded_st is not None:
+    try:
+        transactions = pd.read_csv(uploaded_tx)
+        settlements = pd.read_csv(uploaded_st)
+        st.success("Files uploaded successfully!")
+    except Exception as e:
+        st.error(f"Error reading uploaded files: {e}")
+        st.stop()
+
 else:
     st.warning("Using default data from repository...")
-    transactions = pd.read_csv("transactions.csv")
-    settlements = pd.read_csv("settlements.csv")
+
+    try:
+        transactions = pd.read_csv("transactions.csv")
+        settlements = pd.read_csv("settlements.csv")
+    except Exception as e:
+        st.error("Default CSV files not found. Please upload files manually.")
+        st.stop()
 
 # -------------------------------
 # DATA PREVIEW
